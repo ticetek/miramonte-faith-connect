@@ -41,41 +41,43 @@ const HeroSection = ({ language }: HeroSectionProps) => {
   };
 
   return (
-    <section id="hero" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-100 via-cream-100 to-amber-50 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-50/30 to-white/60"></div>
+    <section id="hero" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      {/* Background image with overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url(/lovable-uploads/c4061fd6-b884-4b60-97f5-633cdf5ca909.png)'
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
       
-      {/* Decorative arches */}
-      <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-amber-200/20 to-transparent"></div>
-      <div className="absolute top-16 left-1/4 w-64 h-64 bg-amber-300/10 rounded-full blur-3xl"></div>
-      <div className="absolute bottom-16 right-1/4 w-96 h-96 bg-yellow-300/10 rounded-full blur-3xl"></div>
-
-      <div className="container mx-auto px-4 text-center relative z-10 pt-20">
+      <div className="container mx-auto px-4 text-center relative z-10 pt-24">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-amber-900 mb-6 leading-tight">
+          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
             {t.title}
           </h1>
           
-          <div className="w-24 h-1 bg-amber-600 mx-auto mb-8"></div>
+          <div className="w-24 h-1 bg-amber-400 mx-auto mb-8"></div>
           
-          <p className="text-xl md:text-2xl text-amber-800 mb-6 font-medium">
+          <p className="text-xl md:text-2xl text-amber-100 mb-6 font-medium drop-shadow-md">
             {t.subtitle}
           </p>
           
-          <p className="text-lg text-amber-700 mb-10 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
             {t.welcome}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button 
               onClick={scrollToAbout}
-              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105"
+              className="bg-amber-600 hover:bg-amber-700 text-white px-8 py-3 text-lg rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               {t.cta}
             </Button>
             <Button 
               onClick={scrollToContact}
               variant="outline"
-              className="border-amber-600 text-amber-600 hover:bg-amber-600 hover:text-white px-8 py-3 text-lg rounded-full transition-all duration-300"
+              className="border-2 border-white text-white hover:bg-white hover:text-amber-800 px-8 py-3 text-lg rounded-full transition-all duration-300 shadow-lg"
             >
               {t.visit}
             </Button>
@@ -85,8 +87,8 @@ const HeroSection = ({ language }: HeroSectionProps) => {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-amber-600 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-amber-600 rounded-full mt-2 animate-pulse"></div>
+        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
     </section>

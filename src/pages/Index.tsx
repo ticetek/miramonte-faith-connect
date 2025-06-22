@@ -8,7 +8,6 @@ import ProjectsSection from '@/components/church/ProjectsSection';
 import AnnouncementsSection from '@/components/church/AnnouncementsSection';
 import NewsletterSection from '@/components/church/NewsletterSection';
 import ContactSection from '@/components/church/ContactSection';
-import LanguageSwitcher from '@/components/church/LanguageSwitcher';
 import Navigation from '@/components/church/Navigation';
 
 export type Language = 'es' | 'en';
@@ -18,8 +17,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
-      <LanguageSwitcher language={language} setLanguage={setLanguage} />
-      <Navigation language={language} />
+      <Navigation language={language} setLanguage={setLanguage} />
       <HeroSection language={language} />
       <AboutSection language={language} />
       <ScheduleSection language={language} />
