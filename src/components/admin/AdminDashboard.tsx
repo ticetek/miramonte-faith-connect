@@ -1,40 +1,39 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { LogOut, Plus, Users, MessageSquare } from 'lucide-react';
-import type { User } from '@supabase/supabase-js';
-import AnnouncementsList from './AnnouncementsList';
+import { LogOut, Plus, Users, FileText } from 'lucide-react';
 import AnnouncementForm from './AnnouncementForm';
+import AnnouncementsList from './AnnouncementsList';
 import SubscribersList from './SubscribersList';
+import AdminDebugInfo from './AdminDebugInfo';
+import type { User } from '@supabase/supabase-js';
 
 interface AdminDashboardProps {
   user: User;
 }
 
-type TabType = 'announcements' | 'create' | 'subscribers';
-
 const AdminDashboard = ({ user }: AdminDashboardProps) => {
-  const [activeTab, setActiveTab] = useState<TabType>('announcements');
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const { toast } = useToast();
 
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast({
-        title: 'Error signing out',
+        title: 'Error',
         description: error.message,
         variant: 'destructive',
       });
+    } else {
+      toast({
+        title: 'Signed out',
+        description: 'You have been signed out successfully.',
+      });
     }
   };
-
-  const tabs = [
-    { id: 'announcements' as TabType, label: 'Announcements', icon: MessageSquare },
-    { id: 'create' as TabType, label: 'Create New', icon: Plus },
-    { id: 'subscribers' as TabType, label: 'Subscribers', icon: Users },
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -42,49 +41,70 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+              <h1 className="text-2xl font-bold text-amber-900">Admin Dashboard</h1>
               <p className="text-sm text-gray-600">Welcome, {user.email}</p>
             </div>
             <Button
               onClick={handleSignOut}
               variant="outline"
-              className="text-gray-600 hover:text-gray-800"
+              className="flex items-center gap-2"
             >
-              <LogOut className="w-4 h-4 mr-2" />
+              <LogOut className="w-4 h-4" />
               Sign Out
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="bg-white rounded-lg shadow">
-          <div className="border-b border-gray-200">
-            <nav className="-mb-px flex space-x-8">
-              {tabs.map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`py-4 px-6 border-b-2 font-medium text-sm flex items-center gap-2 ${
-                    activeTab === tab.id
-                      ? 'border-amber-500 text-amber-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }`}
-                >
-                  <tab.icon className="w-4 h-4" />
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <AdminDebugInfo user={user} />
+        
+        <Tabs defaultValue="announcements" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="announcements" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Announcements
+            </TabsTrigger>
+            <TabsTrigger value="subscribers" className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              Newsletter Subscribers
+            </TabsTrigger>
+          </TabsList>
 
-          <div className="p-6">
-            {activeTab === 'announcements' && <AnnouncementsList />}
-            {activeTab === 'create' && <AnnouncementForm />}
-            {activeTab === 'subscribers' && <SubscribersList />}
-          </div>
-        </div>
-      </div>
+          <TabsContent value="announcements" className="space-y-6">
+            {showCreateForm ? (
+              <div>
+                <Button
+                  onClick={() => setShowCreateForm(false)}
+                  variant="outline"
+                  className="mb-4"
+                >
+                  ← Back to List
+                </Button>
+                <AnnouncementForm onSuccess={() => setShowCreateForm(false)} />
+              </div>
+            ) : (
+              <div>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-semibold text-gray-800">Announcements</h2>
+                  <Button
+                    onClick={() => setShowCreateForm(true)}
+                    className="bg-amber-600 hover:bg-amber-700"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Announcement
+                  </Button>
+                </div>
+                <AnnouncementsList />
+              </div>
+            )}
+          </TabsContent>
+
+          <TabsContent value="subscribers">
+            <SubscribersList />
+          </TabsContent>
+        </Tabs>
+      </main>
     </div>
   );
 };

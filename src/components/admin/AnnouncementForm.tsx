@@ -40,6 +40,33 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
     setIsLoading(true);
 
     try {
+      // Debug: Check current user and session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      console.log('Current session:', session);
+      console.log('Session error:', sessionError);
+      
+      if (!session) {
+        throw new Error('No active session found. Please log in again.');
+      }
+
+      // Debug: Check user profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      
+      console.log('User profile:', profile);
+      console.log('Profile error:', profileError);
+      
+      if (!profile) {
+        throw new Error('User profile not found. Please contact administrator.');
+      }
+      
+      if (profile.role !== 'admin') {
+        throw new Error(`Access denied. Current role: ${profile.role}. Admin role required.`);
+      }
+
       const announcementData = {
         title_es: titleEs.trim(),
         title_en: titleEn.trim(),
@@ -83,6 +110,12 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
 
         if (error) {
           console.error('Insert error:', error);
+          console.error('Error details:', {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint
+          });
           throw error;
         }
 
@@ -111,9 +144,23 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
 
     } catch (error: any) {
       console.error('Form submission error:', error);
+      
+      // More specific error messages
+      let errorMessage = 'An error occurred while saving the announcement';
+      
+      if (error.message.includes('row-level security policy')) {
+        errorMessage = 'Access denied: You do not have permission to create announcements. Please ensure you are logged in as an admin.';
+      } else if (error.message.includes('No active session')) {
+        errorMessage = 'Please log in again to continue.';
+      } else if (error.message.includes('role')) {
+        errorMessage = error.message;
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
       toast({
         title: 'Error',
-        description: error.message || 'An error occurred while saving the announcement',
+        description: errorMessage,
         variant: 'destructive',
       });
     } finally {
