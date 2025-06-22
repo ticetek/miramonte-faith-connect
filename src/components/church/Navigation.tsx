@@ -44,9 +44,6 @@ const Navigation = ({ language, setLanguage }: NavigationProps) => {
               alt="Adventist Logo" 
               className="w-8 h-8"
             />
-            <div className="text-amber-800 font-bold text-lg">
-              IAM
-            </div>
           </div>
           
           {/* Navigation links */}

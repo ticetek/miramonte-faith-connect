@@ -1,6 +1,7 @@
 
 import { Language } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
+import { ArrowDown } from 'lucide-react';
 
 interface HeroSectionProps {
   language: Language;
@@ -9,14 +10,16 @@ interface HeroSectionProps {
 const HeroSection = ({ language }: HeroSectionProps) => {
   const content = {
     es: {
-      title: 'Iglesia Adventista del Séptimo Día Miramonte',
+      title: 'Iglesia Adventista del Séptimo Día',
+      titleSecond: 'Miramonte',
       subtitle: 'Un lugar donde la fe, la esperanza y el amor se encuentran',
       welcome: 'Te invitamos a ser parte de nuestra familia de fe',
       cta: 'Conoce Más',
       visit: 'Visítanos'
     },
     en: {
-      title: 'Seventh-day Adventist Church Miramonte',
+      title: 'Seventh-day Adventist Church',
+      titleSecond: 'Miramonte',
       subtitle: 'A place where faith, hope, and love come together',
       welcome: 'We invite you to be part of our faith family',
       cta: 'Learn More',
@@ -53,17 +56,19 @@ const HeroSection = ({ language }: HeroSectionProps) => {
       
       <div className="container mx-auto px-4 text-center relative z-10 pt-24">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
             {t.title}
+            <br />
+            {t.titleSecond}
           </h1>
           
           <div className="w-24 h-1 bg-amber-400 mx-auto mb-8"></div>
           
-          <p className="text-xl md:text-2xl text-amber-100 mb-6 font-medium drop-shadow-md">
+          <p className="text-xl md:text-2xl text-amber-100 mb-6 font-medium drop-shadow-md bg-black/40 rounded-lg px-6 py-3 backdrop-blur-sm">
             {t.subtitle}
           </p>
           
-          <p className="text-lg text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+          <p className="text-lg text-white/90 mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md bg-black/40 rounded-lg px-6 py-3 backdrop-blur-sm">
             {t.welcome}
           </p>
           
@@ -85,11 +90,9 @@ const HeroSection = ({ language }: HeroSectionProps) => {
         </div>
       </div>
 
-      {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
-        </div>
+      {/* Arrow down indicator */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
+        <ArrowDown className="w-8 h-8 text-white animate-bounce" />
       </div>
     </section>
   );
