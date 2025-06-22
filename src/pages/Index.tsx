@@ -1,12 +1,33 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState } from 'react';
+import HeroSection from '@/components/church/HeroSection';
+import AboutSection from '@/components/church/AboutSection';
+import ScheduleSection from '@/components/church/ScheduleSection';
+import SocialMediaSection from '@/components/church/SocialMediaSection';
+import ProjectsSection from '@/components/church/ProjectsSection';
+import AnnouncementsSection from '@/components/church/AnnouncementsSection';
+import NewsletterSection from '@/components/church/NewsletterSection';
+import ContactSection from '@/components/church/ContactSection';
+import LanguageSwitcher from '@/components/church/LanguageSwitcher';
+import Navigation from '@/components/church/Navigation';
+
+export type Language = 'es' | 'en';
 
 const Index = () => {
+  const [language, setLanguage] = useState<Language>('es');
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-to-b from-amber-50 to-white">
+      <LanguageSwitcher language={language} setLanguage={setLanguage} />
+      <Navigation language={language} />
+      <HeroSection language={language} />
+      <AboutSection language={language} />
+      <ScheduleSection language={language} />
+      <SocialMediaSection language={language} />
+      <ProjectsSection language={language} />
+      <AnnouncementsSection language={language} />
+      <NewsletterSection language={language} />
+      <ContactSection language={language} />
     </div>
   );
 };
