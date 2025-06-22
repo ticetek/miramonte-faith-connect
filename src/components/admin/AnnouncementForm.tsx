@@ -51,22 +51,20 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
 
       console.log('Submitting announcement data:', announcementData);
 
-      let result;
-      
       if (announcement) {
         // Update existing announcement
-        result = await supabase
+        const { data, error } = await supabase
           .from('announcements')
           .update(announcementData)
           .eq('id', announcement.id)
           .select();
 
-        if (result.error) {
-          console.error('Update error:', result.error);
-          throw result.error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
         }
 
-        console.log('Update success:', result.data);
+        console.log('Update success:', data);
 
         toast({
           title: 'Success',
@@ -74,7 +72,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
         });
       } else {
         // Create new announcement
-        result = await supabase
+        const { data, error } = await supabase
           .from('announcements')
           .insert([{
             ...announcementData,
@@ -83,12 +81,12 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
           }])
           .select();
 
-        if (result.error) {
-          console.error('Insert error:', result.error);
-          throw result.error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
         }
 
-        console.log('Insert success:', result.data);
+        console.log('Insert success:', data);
 
         toast({
           title: 'Success',
@@ -103,7 +101,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
         setImageUrl('');
       }
 
-      // Invalidate and refetch queries
+      // Invalidate queries to refresh data
       await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
       await queryClient.invalidateQueries({ queryKey: ['announcements'] });
       

@@ -14,7 +14,7 @@ const AnnouncementsList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: announcements, isLoading, refetch } = useQuery({
+  const { data: announcements, isLoading, error } = useQuery({
     queryKey: ['admin-announcements'],
     queryFn: async () => {
       console.log('Fetching announcements...');
@@ -57,8 +57,9 @@ const AnnouncementsList = () => {
         description: `Announcement ${!currentStatus ? 'published' : 'unpublished'} successfully`,
       });
       
-      // Force refetch instead of just invalidating
-      await refetch();
+      // Invalidate and refetch the query
+      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
       
     } catch (error: any) {
       console.error('Toggle published failed:', error);
@@ -78,26 +79,26 @@ const AnnouncementsList = () => {
     console.log('Deleting announcement:', id);
 
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from('announcements')
         .delete()
-        .eq('id', id)
-        .select();
+        .eq('id', id);
 
       if (error) {
         console.error('Delete error:', error);
         throw error;
       }
 
-      console.log('Delete success:', data);
+      console.log('Delete success for ID:', id);
 
       toast({
         title: 'Success',
         description: 'Announcement deleted successfully',
       });
       
-      // Force refetch instead of just invalidating
-      await refetch();
+      // Invalidate and refetch the query
+      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
       
     } catch (error: any) {
       console.error('Delete failed:', error);
@@ -112,7 +113,9 @@ const AnnouncementsList = () => {
   const handleEditSuccess = async () => {
     console.log('Edit success callback triggered');
     setEditingAnnouncement(null);
-    await refetch();
+    // Invalidate and refetch the query
+    await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+    await queryClient.invalidateQueries({ queryKey: ['announcements'] });
   };
 
   if (editingAnnouncement) {
@@ -137,12 +140,21 @@ const AnnouncementsList = () => {
     return <div className="text-center py-8">Loading announcements...</div>;
   }
 
+  if (error) {
+    console.error('Query error:', error);
+    return (
+      <div className="text-center py-8 text-red-600">
+        Error loading announcements: {error.message}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-800">Manage Announcements</h2>
         <Button
-          onClick={() => refetch()}
+          onClick={() => queryClient.invalidateQueries({ queryKey: ['admin-announcements'] })}
           variant="outline"
           size="sm"
         >
