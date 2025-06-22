@@ -8,7 +8,6 @@ import { LogOut, Plus, Users, FileText } from 'lucide-react';
 import AnnouncementForm from './AnnouncementForm';
 import AnnouncementsList from './AnnouncementsList';
 import SubscribersList from './SubscribersList';
-import AdminDebugInfo from './AdminDebugInfo';
 import type { User } from '@supabase/supabase-js';
 
 interface AdminDashboardProps {
@@ -57,8 +56,6 @@ const AdminDashboard = ({ user }: AdminDashboardProps) => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <AdminDebugInfo user={user} />
-        
         <Tabs defaultValue="announcements" className="space-y-6">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="announcements" className="flex items-center gap-2">
