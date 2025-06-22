@@ -28,48 +28,66 @@ const AnnouncementsList = () => {
   });
 
   const togglePublished = async (id: string, currentStatus: boolean) => {
-    const { error } = await supabase
-      .from('announcements')
-      .update({ is_published: !currentStatus })
-      .eq('id', id);
+    console.log('Toggling published status for:', id, 'current:', currentStatus);
+    
+    try {
+      const { error } = await supabase
+        .from('announcements')
+        .update({ is_published: !currentStatus })
+        .eq('id', id);
 
-    if (error) {
+      if (error) {
+        console.error('Toggle published error:', error);
+        throw error;
+      }
+
+      toast({
+        title: 'Success',
+        description: `Announcement ${!currentStatus ? 'published' : 'unpublished'}`,
+      });
+      
+      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
+    } catch (error: any) {
+      console.error('Toggle published failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to update announcement status',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Success',
-        description: `Announcement ${!currentStatus ? 'published' : 'unpublished'}`,
-      });
-      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
     }
   };
 
   const deleteAnnouncement = async (id: string) => {
     if (!confirm('Are you sure you want to delete this announcement?')) return;
 
-    const { error } = await supabase
-      .from('announcements')
-      .delete()
-      .eq('id', id);
+    console.log('Deleting announcement:', id);
 
-    if (error) {
+    try {
+      const { error } = await supabase
+        .from('announcements')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        console.error('Delete error:', error);
+        throw error;
+      }
+
+      toast({
+        title: 'Success',
+        description: 'Announcement deleted successfully',
+      });
+      
+      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
+    } catch (error: any) {
+      console.error('Delete failed:', error);
       toast({
         title: 'Error',
         description: 'Failed to delete announcement',
         variant: 'destructive',
       });
-    } else {
-      toast({
-        title: 'Success',
-        description: 'Announcement deleted successfully',
-      });
-      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
     }
   };
 
@@ -127,6 +145,12 @@ const AnnouncementsList = () => {
                       {announcement.content_es}
                     </p>
                   </div>
+                  
+                  {announcement.image_url && (
+                    <div className="text-xs text-gray-500">
+                      Image: {announcement.image_url}
+                    </div>
+                  )}
                   
                   <div className="text-xs text-gray-500">
                     Created: {new Date(announcement.created_at).toLocaleDateString()}

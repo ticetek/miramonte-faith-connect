@@ -39,6 +39,8 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
         updated_at: new Date().toISOString(),
       };
 
+      console.log('Submitting announcement data:', announcementData);
+
       if (announcement) {
         // Update existing announcement
         const { error } = await supabase
@@ -46,7 +48,10 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
           .update(announcementData)
           .eq('id', announcement.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
 
         toast({
           title: 'Success',
@@ -58,7 +63,10 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
           .from('announcements')
           .insert([announcementData]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
 
         toast({
           title: 'Success',
@@ -74,15 +82,16 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
       }
 
       // Invalidate queries to refresh the lists
-      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
-      queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
       
       if (onSuccess) onSuccess();
 
     } catch (error: any) {
+      console.error('Form submission error:', error);
       toast({
         title: 'Error',
-        description: error.message,
+        description: error.message || 'An error occurred while saving the announcement',
         variant: 'destructive',
       });
     } finally {
