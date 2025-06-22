@@ -1,5 +1,4 @@
 
-
 import { Language } from '@/pages/Index';
 import { Button } from '@/components/ui/button';
 import { ArrowDown } from 'lucide-react';
@@ -12,15 +11,13 @@ const HeroSection = ({ language }: HeroSectionProps) => {
   const content = {
     es: {
       title: 'Iglesia Adventista del Séptimo Día - Miramonte',
-      subtitle: 'Un lugar donde la fe, la esperanza y el amor se encuentran',
-      welcome: 'Te invitamos a ser parte de nuestra familia de fe',
+      subtitle: 'Un lugar donde la fe, la esperanza y el amor se encuentran. Te invitamos a ser parte de nuestra familia de fe',
       cta: 'Conoce Más',
       visit: 'Visítanos'
     },
     en: {
       title: 'Seventh-day Adventist Church - Miramonte',
-      subtitle: 'A place where faith, hope, and love come together',
-      welcome: 'We invite you to be part of our faith family',
+      subtitle: 'A place where faith, hope, and love come together. We invite you to be part of our faith family',
       cta: 'Learn More',
       visit: 'Visit Us'
     }
@@ -61,12 +58,8 @@ const HeroSection = ({ language }: HeroSectionProps) => {
           
           <div className="w-24 h-1 bg-amber-400 mx-auto mb-8"></div>
           
-          <p className="text-xl md:text-2xl text-white mb-6 font-medium drop-shadow-md bg-primary rounded-lg px-6 py-3 backdrop-blur-sm">
+          <p className="text-xl md:text-2xl text-amber-100 mb-10 max-w-3xl mx-auto leading-relaxed drop-shadow-md font-medium">
             {t.subtitle}
-          </p>
-          
-          <p className="text-lg text-white mb-10 max-w-2xl mx-auto leading-relaxed drop-shadow-md bg-primary rounded-lg px-6 py-3 backdrop-blur-sm">
-            {t.welcome}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -96,4 +89,3 @@ const HeroSection = ({ language }: HeroSectionProps) => {
 };
 
 export default HeroSection;
-
