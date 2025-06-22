@@ -27,31 +27,46 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!titleEs.trim() || !titleEn.trim() || !contentEs.trim() || !contentEn.trim()) {
+      toast({
+        title: 'Validation Error',
+        description: 'Please fill in all required fields',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const announcementData = {
-        title_es: titleEs,
-        title_en: titleEn,
-        content_es: contentEs,
-        content_en: contentEn,
-        image_url: imageUrl || null,
+        title_es: titleEs.trim(),
+        title_en: titleEn.trim(),
+        content_es: contentEs.trim(),
+        content_en: contentEn.trim(),
+        image_url: imageUrl.trim() || null,
         updated_at: new Date().toISOString(),
       };
 
       console.log('Submitting announcement data:', announcementData);
 
+      let result;
+      
       if (announcement) {
         // Update existing announcement
-        const { error } = await supabase
+        result = await supabase
           .from('announcements')
           .update(announcementData)
-          .eq('id', announcement.id);
+          .eq('id', announcement.id)
+          .select();
 
-        if (error) {
-          console.error('Update error:', error);
-          throw error;
+        if (result.error) {
+          console.error('Update error:', result.error);
+          throw result.error;
         }
+
+        console.log('Update success:', result.data);
 
         toast({
           title: 'Success',
@@ -59,21 +74,28 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
         });
       } else {
         // Create new announcement
-        const { error } = await supabase
+        result = await supabase
           .from('announcements')
-          .insert([announcementData]);
+          .insert([{
+            ...announcementData,
+            is_published: true,
+            created_at: new Date().toISOString()
+          }])
+          .select();
 
-        if (error) {
-          console.error('Insert error:', error);
-          throw error;
+        if (result.error) {
+          console.error('Insert error:', result.error);
+          throw result.error;
         }
+
+        console.log('Insert success:', result.data);
 
         toast({
           title: 'Success',
           description: 'Announcement created successfully',
         });
 
-        // Reset form
+        // Reset form for new announcements
         setTitleEs('');
         setTitleEn('');
         setContentEs('');
@@ -81,11 +103,13 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
         setImageUrl('');
       }
 
-      // Invalidate queries to refresh the lists
+      // Invalidate and refetch queries
       await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
       await queryClient.invalidateQueries({ queryKey: ['announcements'] });
       
-      if (onSuccess) onSuccess();
+      if (onSuccess) {
+        onSuccess();
+      }
 
     } catch (error: any) {
       console.error('Form submission error:', error);
@@ -121,7 +145,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
           <CardContent className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title
+                Title *
               </label>
               <Input
                 value={titleEs}
@@ -132,7 +156,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content
+                Content *
               </label>
               <Textarea
                 value={contentEs}
@@ -158,7 +182,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
           <CardContent className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Title
+                Title *
               </label>
               <Input
                 value={titleEn}
@@ -169,7 +193,7 @@ const AnnouncementForm = ({ announcement, onSuccess }: AnnouncementFormProps) =>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Content
+                Content *
               </label>
               <Textarea
                 value={contentEn}

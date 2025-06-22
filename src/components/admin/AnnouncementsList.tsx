@@ -14,81 +14,105 @@ const AnnouncementsList = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: announcements, isLoading } = useQuery({
+  const { data: announcements, isLoading, refetch } = useQuery({
     queryKey: ['admin-announcements'],
     queryFn: async () => {
+      console.log('Fetching announcements...');
       const { data, error } = await supabase
         .from('announcements')
         .select('*')
         .order('created_at', { ascending: false });
       
-      if (error) throw error;
+      if (error) {
+        console.error('Error fetching announcements:', error);
+        throw error;
+      }
+      console.log('Fetched announcements:', data);
       return data;
     }
   });
 
   const togglePublished = async (id: string, currentStatus: boolean) => {
-    console.log('Toggling published status for:', id, 'current:', currentStatus);
+    console.log('Toggling published status for:', id, 'from:', currentStatus, 'to:', !currentStatus);
     
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('announcements')
-        .update({ is_published: !currentStatus })
-        .eq('id', id);
+        .update({ 
+          is_published: !currentStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', id)
+        .select();
 
       if (error) {
         console.error('Toggle published error:', error);
         throw error;
       }
 
+      console.log('Toggle published success:', data);
+
       toast({
         title: 'Success',
-        description: `Announcement ${!currentStatus ? 'published' : 'unpublished'}`,
+        description: `Announcement ${!currentStatus ? 'published' : 'unpublished'} successfully`,
       });
       
-      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
-      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      // Force refetch instead of just invalidating
+      await refetch();
+      
     } catch (error: any) {
       console.error('Toggle published failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to update announcement status',
+        description: error.message || 'Failed to update announcement status',
         variant: 'destructive',
       });
     }
   };
 
   const deleteAnnouncement = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this announcement?')) return;
+    if (!confirm('Are you sure you want to delete this announcement? This action cannot be undone.')) {
+      return;
+    }
 
     console.log('Deleting announcement:', id);
 
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('announcements')
         .delete()
-        .eq('id', id);
+        .eq('id', id)
+        .select();
 
       if (error) {
         console.error('Delete error:', error);
         throw error;
       }
 
+      console.log('Delete success:', data);
+
       toast({
         title: 'Success',
         description: 'Announcement deleted successfully',
       });
       
-      await queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
-      await queryClient.invalidateQueries({ queryKey: ['announcements'] });
+      // Force refetch instead of just invalidating
+      await refetch();
+      
     } catch (error: any) {
       console.error('Delete failed:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete announcement',
+        description: error.message || 'Failed to delete announcement',
         variant: 'destructive',
       });
     }
+  };
+
+  const handleEditSuccess = async () => {
+    console.log('Edit success callback triggered');
+    setEditingAnnouncement(null);
+    await refetch();
   };
 
   if (editingAnnouncement) {
@@ -103,7 +127,7 @@ const AnnouncementsList = () => {
         </Button>
         <AnnouncementForm
           announcement={editingAnnouncement}
-          onSuccess={() => setEditingAnnouncement(null)}
+          onSuccess={handleEditSuccess}
         />
       </div>
     );
@@ -115,7 +139,16 @@ const AnnouncementsList = () => {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800">Manage Announcements</h2>
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold text-gray-800">Manage Announcements</h2>
+        <Button
+          onClick={() => refetch()}
+          variant="outline"
+          size="sm"
+        >
+          Refresh
+        </Button>
+      </div>
       
       {announcements && announcements.length > 0 ? (
         <div className="grid gap-6">
@@ -154,6 +187,11 @@ const AnnouncementsList = () => {
                   
                   <div className="text-xs text-gray-500">
                     Created: {new Date(announcement.created_at).toLocaleDateString()}
+                    {announcement.updated_at !== announcement.created_at && (
+                      <span className="ml-2">
+                        • Updated: {new Date(announcement.updated_at).toLocaleDateString()}
+                      </span>
+                    )}
                   </div>
                   
                   <div className="flex gap-2 pt-2">
