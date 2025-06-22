@@ -9,14 +9,14 @@ interface HeroSectionProps {
 const HeroSection = ({ language }: HeroSectionProps) => {
   const content = {
     es: {
-      title: 'Iglesia Adventista Miramonte',
+      title: 'Iglesia Adventista del Séptimo Día Miramonte',
       subtitle: 'Un lugar donde la fe, la esperanza y el amor se encuentran',
       welcome: 'Te invitamos a ser parte de nuestra familia de fe',
       cta: 'Conoce Más',
       visit: 'Visítanos'
     },
     en: {
-      title: 'Iglesia Adventista Miramonte',
+      title: 'Seventh-day Adventist Church Miramonte',
       subtitle: 'A place where faith, hope, and love come together',
       welcome: 'We invite you to be part of our faith family',
       cta: 'Learn More',
@@ -53,7 +53,7 @@ const HeroSection = ({ language }: HeroSectionProps) => {
       
       <div className="container mx-auto px-4 text-center relative z-10 pt-24">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
             {t.title}
           </h1>
           
@@ -77,7 +77,7 @@ const HeroSection = ({ language }: HeroSectionProps) => {
             <Button 
               onClick={scrollToContact}
               variant="outline"
-              className="border-2 border-white text-white hover:bg-white hover:text-amber-800 px-8 py-3 text-lg rounded-full transition-all duration-300 shadow-lg"
+              className="border-2 border-amber-400 bg-amber-400/10 text-white hover:bg-amber-400 hover:text-amber-900 px-8 py-3 text-lg rounded-full transition-all duration-300 shadow-lg backdrop-blur-sm"
             >
               {t.visit}
             </Button>

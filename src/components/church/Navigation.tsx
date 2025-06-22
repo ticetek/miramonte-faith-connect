@@ -37,9 +37,16 @@ const Navigation = ({ language, setLanguage }: NavigationProps) => {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
-          {/* Church name/logo */}
-          <div className="text-amber-800 font-bold text-lg">
-            IAM
+          {/* Church logo */}
+          <div className="flex items-center space-x-3">
+            <img 
+              src="https://cdn.adventist.org/adventist-logo/2/symbol/adventist-symbol-circle--black.svg" 
+              alt="Adventist Logo" 
+              className="w-8 h-8"
+            />
+            <div className="text-amber-800 font-bold text-lg">
+              IAM
+            </div>
           </div>
           
           {/* Navigation links */}

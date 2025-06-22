@@ -49,8 +49,8 @@ const ProjectsSection = ({ language }: ProjectsSectionProps) => {
           </div>
           
           <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
-            <div className="grid lg:grid-cols-2 gap-0">
-              <div className="p-8 lg:p-12">
+            <div className="grid lg:grid-cols-3 gap-0">
+              <div className="lg:col-span-2 p-8 lg:p-12">
                 <div className="flex items-center mb-6">
                   <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center mr-4">
                     <Heart className="w-6 h-6 text-red-600" />
@@ -73,27 +73,35 @@ const ProjectsSection = ({ language }: ProjectsSectionProps) => {
                     <ExternalLink className="w-4 h-4" />
                   </a>
                 </Button>
-              </div>
-              
-              <div className="bg-gradient-to-br from-amber-100 to-yellow-100 p-8 lg:p-12">
-                <h4 className="text-xl font-bold text-amber-900 mb-6">
-                  {t.impact}
-                </h4>
                 
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">{t.families}</span>
-                    <span className="text-2xl font-bold text-amber-600">250+</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">{t.meals}</span>
-                    <span className="text-2xl font-bold text-amber-600">5,000+</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700">{t.volunteers}</span>
-                    <span className="text-2xl font-bold text-amber-600">25</span>
+                <div className="mt-8">
+                  <h4 className="text-xl font-bold text-amber-900 mb-6">
+                    {t.impact}
+                  </h4>
+                  
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-amber-600">250+</div>
+                      <div className="text-sm text-gray-600">{t.families}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-amber-600">5,000+</div>
+                      <div className="text-sm text-gray-600">{t.meals}</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl font-bold text-amber-600">25</div>
+                      <div className="text-sm text-gray-600">{t.volunteers}</div>
+                    </div>
                   </div>
                 </div>
+              </div>
+              
+              <div className="lg:col-span-1">
+                <img 
+                  src="/lovable-uploads/03ec1d4b-b725-46ad-b12e-28db844409ee.png"
+                  alt="Albergue Adventista"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </div>
           </div>
